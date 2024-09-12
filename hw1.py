@@ -1,4 +1,5 @@
 from collections import Counter
+import os
 """""
 # Problem 1
 def isValid(string):
@@ -63,7 +64,8 @@ print(isBalanced('{{[[(())]]}}'))
 print(isBalanced('[{}]()'))
 print(isBalanced('[{}()]'))
 print(isBalanced('[{}]()'))
-"""""
+
+
 # Problem 3
 class Node:
     def __init__(self, label, leftChild = None, rightChild = None):
@@ -102,8 +104,6 @@ class Node:
         return list
 
     def sumTree(self):
-        total = 0
-
         def sum(node):
             if node is None:
                 return 0
@@ -115,8 +115,7 @@ class Node:
 
             return total
 
-        return sum(self,)
-
+        return sum(self)
 
 
 root = Node(2, Node(1, Node(6), Node(3)), Node(3, None, Node(9)))
@@ -131,3 +130,32 @@ print(root.preOrder())
 print(root.inOrder())
 print(root.postOrder())
 print(root.sumTree())
+"""
+# Problem 4
+def parse_file(file):
+    if os.path.exists(file):
+        reversed_lines = []
+        with open(file, "r") as open_file:
+            lines = open_file.readlines()
+
+            num_lines = len(lines)
+            num_words = 0
+            num_characters = 0
+            for line in lines:
+                reversed_lines.append(line)
+                num_words += len(line.split(" "))
+                num_characters += len(line)
+
+            print("Total number of lines: " + str(num_lines))
+            print("Total number of words: " + str(num_words))
+            print("Total number of characters: " + str(num_characters))
+
+        with open("reversed_lines.txt", "w") as write_file:
+            while reversed_lines:
+                write_file.write(reversed_lines.pop())
+
+    else:
+        print(file + " does not exist.")
+
+
+parse_file('sample.txt')
