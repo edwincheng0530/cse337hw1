@@ -1,7 +1,6 @@
 from collections import Counter
 import os
-"""""
-# Problem 1
+# PROBLEM 1
 def isValid(string):
     charFrequency = {}
     for character in string:
@@ -21,9 +20,9 @@ def isValid(string):
 
     keys = list(lengthFrequency.keys())
     if len(keys) == 1:
-        return True
+        return 'YES'
     if len(keys) > 2:
-        return False
+        return 'NO'
 
     diff1 = abs(keys[0]-keys[1])*abs(lengthFrequency[keys[0]])
     diff2 = abs(keys[0]-keys[1])*abs(lengthFrequency[keys[1]])
@@ -33,12 +32,22 @@ def isValid(string):
     else:
         return 'NO'
 
+print("Problem 1:")
+# Given Test Cases
 print(isValid('aabbcd'))
 print(isValid('aabbbcdddeefghi'))
 print(isValid('abcdefghhgfedecba'))
+# My Test Cases
+print('\n' + isValid('a'))                       # YES
+print(isValid('aaaaa'))                          # YES
+print(isValid('abababa'))                        # YES
+print(isValid('aaabbbcccdddeef'))                # NO
+print(isValid('abcdefghijklmnopqrstuvwxyzz'))    # YES
+print(isValid('aabcdefghijklmnopqrstuvwxyzz'))   # NO
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Problem 2
+# PROBLEM 2
 def isBalanced(string):
     stack = []
     open = {'{', '[', '('}
@@ -49,7 +58,10 @@ def isBalanced(string):
         if bracket in open:
             stack.append(bracket)
         elif bracket in close:
-            poppedBracket = stack.pop()
+            if stack:
+                poppedBracket = stack.pop()
+            else:
+                return 'NO'
             if poppedBracket != dict[bracket]:
                 return 'NO'
 
@@ -58,6 +70,8 @@ def isBalanced(string):
 
     return 'YES'
 
+print("\nProblem 2:")
+# Given Test Cases
 print(isBalanced('{[()]}'))
 print(isBalanced('{[(])}'))
 print(isBalanced('{{[[(())]]}}'))
@@ -65,8 +79,15 @@ print(isBalanced('[{}]()'))
 print(isBalanced('[{}()]'))
 print(isBalanced('[{}]()'))
 
+# My Test Cases
+print('\n' + isBalanced('}{'))      # NO
+print(isBalanced('{({})}]'))        # NO
+print(isBalanced('([][])('))        # NO
+print(isBalanced('({}[)]'))         # NO
+print(isBalanced('{{([][])}[()]}')) # YES
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Problem 3
+# PROBLEM 3
 class Node:
     def __init__(self, label, leftChild = None, rightChild = None):
         self.leftChild = leftChild
@@ -118,20 +139,87 @@ class Node:
         return sum(self)
 
 
+print("\nProblem 3:")
+# Given Test Cases
 root = Node(2, Node(1, Node(6), Node(3)), Node(3, None, Node(9)))
 print(root.preOrder())
 print(root.inOrder())
 print(root.postOrder())
 print(root.sumTree())
 
-
 root = Node(1, Node(2, Node(3)), Node(4, None, (Node(5, None, Node(6, None, Node(7))))))
 print(root.preOrder())
 print(root.inOrder())
 print(root.postOrder())
 print(root.sumTree())
-"""
-# Problem 4
+
+#My Test Cases
+root = Node(1,
+            Node(2),
+            Node(3))
+assert root.preOrder() == [1, 2, 3]
+assert root.inOrder() == [2, 1, 3]
+assert root.postOrder() == [2, 3, 1]
+assert root.sumTree() == 6
+print()
+print(root.preOrder())
+print(root.inOrder())
+print(root.postOrder())
+print(root.sumTree())
+
+root = Node(7)
+assert root.preOrder() == [7]
+assert root.inOrder() == [7]
+assert root.postOrder() == [7]
+assert root.sumTree() == 7
+print(root.preOrder())
+print(root.inOrder())
+print(root.postOrder())
+print(root.sumTree())
+
+root = Node(5,
+            Node(4, Node(3)))
+assert root.preOrder() == [5, 4, 3]
+assert root.inOrder() == [3, 4, 5]
+assert root.postOrder() == [3, 4, 5]
+assert root.sumTree() == 12
+print(root.preOrder())
+print(root.inOrder())
+print(root.postOrder())
+print(root.sumTree())
+
+
+root = Node(-1,
+            None,
+            Node(-2, None, Node(-3)))
+assert root.preOrder() == [-1, -2, -3]
+assert root.inOrder() == [-1, -2, -3]
+assert root.postOrder() == [-3, -2, -1]
+assert root.sumTree() == -6
+print(root.preOrder())
+print(root.inOrder())
+print(root.postOrder())
+print(root.sumTree())
+
+root = Node(10,
+            Node(5,
+                 Node(1), Node(7)),
+            Node(15,
+                 Node(12), Node(20)))
+
+assert root.preOrder() == [10, 5, 1, 7, 15, 12, 20]
+assert root.inOrder() == [1, 5, 7, 10, 12, 15, 20]
+assert root.postOrder() == [1, 7, 5, 12, 20, 15, 10]
+assert root.sumTree() == 70
+print(root.preOrder())
+print(root.inOrder())
+print(root.postOrder())
+print(root.sumTree())
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# PROBLEM 4
 def parse_file(file):
     if os.path.exists(file):
         reversed_lines = []
@@ -143,7 +231,7 @@ def parse_file(file):
             num_characters = 0
             for line in lines:
                 reversed_lines.append(line)
-                num_words += len(line.split(" "))
+                num_words += len([word for word in line.split(" ") if word != '' and word != '\n'])
                 num_characters += len(line)
 
             print("Total number of lines: " + str(num_lines))
@@ -157,5 +245,109 @@ def parse_file(file):
     else:
         print(file + " does not exist.")
 
+print("\nProblem 4:")
+# Given Test Case
+# parse_file('sample.txt')
 
-parse_file('sample.txt')
+parse_file('test.txt')
+
+# My Test Cases
+"""
+CASE 1:
+INPUT:
+input.txt (Three new line characters)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+parse_file('input.txt')
+
+OUTPUT:
+Total number of lines: 3
+Total number of words: 0
+Total number of characters: 3
+
+reversed_lines.txt:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+CASE 2:
+INPUT:
+input.txt - does not exist
+
+parse_file('input.txt')
+
+OUTPUT:
+input.txt does not exist
+
+reversed_lines.txt - does not exist (if it didn't exist previously)
+
+CASE 3:
+INPUT:
+input.txt: (empty file)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+parse_file('input.txt')
+
+OUTPUT:
+Total number of lines: 0
+Total number of words: 0
+Total number of characters: 0
+
+reversed_lines.txt: (empty file)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+CASE 4:
+INPUT:
+input.txt (Three lines of only whitespaces)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Hello world!
+   Lots of whitespace.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+parse_file('input.txt')
+
+OUTPUT:
+Total number of lines: 2
+Total number of words: 5
+Total number of characters: 39
+
+reversed_lines.txt:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Lots of whitespace.
+   Hello world!
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+CASE 5:
+INPUT:
+input.txt: (empty file)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This file only has one line.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+parse_file('input.txt')
+
+OUTPUT:
+Total number of lines: 1
+Total number of words: 6
+Total number of characters: 28
+
+reversed_lines.txt:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This file only has one line.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""
