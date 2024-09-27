@@ -1,16 +1,11 @@
 from collections import Counter
-import os
+
 # PROBLEM 1
 def isValid(string):
     charFrequency = {}
-    for character in string:
-        if character in charFrequency:
-            charFrequency[character] += 1
-        else:
-            charFrequency[character] = 1
-
+    # Count frequency of each unique character found in string and store in a dictionary
     charFrequency = Counter(string)
-
+    # Create a dictionary where key is frequency that a character appears and value is the number of times this frequency exists in the string
     lengthFrequency = {}
     for frequency in charFrequency.values():
         if frequency in lengthFrequency:
@@ -19,20 +14,26 @@ def isValid(string):
             lengthFrequency[frequency] = 1
 
     keys = list(lengthFrequency.keys())
+    # If all characters have the same frequency, it is a valid string
     if len(keys) == 1:
         return 'YES'
+    # If there are more than 2 different frequencies, then it will be impossible for the string to be valid
+    # as we are only capable of deleting one of these frequencies in the best case scenario
     if len(keys) > 2:
         return 'NO'
 
-    if(lengthFrequency[keys[0]] == 1 or lengthFrequency[keys[1]] == 1):
+    # If we are here, that means there are exactly 2 frequencies - 
+    # if one of these frequencies represents a single unique character, we can remove it and the string is valid  
+    if((lengthFrequency[keys[0]] == 1 and keys[0] == 1)
+       or (lengthFrequency[keys[1]] == 1 and keys[1] == 1)):
         return 'YES'
-    diff1 = abs(keys[0]-keys[1])*abs(lengthFrequency[keys[0]])
-    diff2 = abs(keys[0]-keys[1])*abs(lengthFrequency[keys[1]])
+    
+    # Remove a character from the largest occuring frequency and update the lengthFrequency dictionary
+    largestFreq = max(keys[0], keys[1])
+    lengthFrequency[largestFreq] -= 1
 
-    if diff1 <= 1 or diff2 <= 1:
-        return 'YES'
-    else:
-        return 'NO'
+    # After removing a character, there should only be one length frequency left
+    return 'YES' if lengthFrequency[largestFreq] == 0 and (largestFreq-1) in keys else 'NO'
 
 print("Problem 1:")
 # Given Test Cases
@@ -57,8 +58,11 @@ def isBalanced(string):
     dict = {'}': '{', ']': '[', ')': '('}
 
     for bracket in string:
+        # If the character is an open bracket, push it onto stack
         if bracket in open:
             stack.append(bracket)
+        # If the character is a closing bracket, pop the stack
+        # If the closing bracket doesn't match opening bracket or stack is empty, return NO
         elif bracket in close:
             if stack:
                 poppedBracket = stack.pop()
@@ -67,6 +71,7 @@ def isBalanced(string):
             if poppedBracket != dict[bracket]:
                 return 'NO'
 
+    # If stack still has elements, the string isn't balanced - retur NO
     if len(stack) > 0:
         return 'NO'
 
@@ -100,12 +105,17 @@ class Node:
         if(node is None):
             return
 
+        # If preOrder, add to list before traversing to its left and right child respectively
         if order == 1:
             list.append(node.label)
         self.recursive(node.leftChild, list, order)
+
+        # If inOrder, add to list after traversing to the left but before going to the right child
         if order == 2:
             list.append(node.label)
         self.recursive(node.rightChild, list, order)
+        
+        # If postOrder, add to list after traversing to its left and right child
         if order == 3:
             list.append(node.label)
         return list
@@ -223,7 +233,7 @@ print(root.sumTree())
 
 # PROBLEM 4
 def parse_file(file):
-    if os.path.exists(file):
+    try:
         reversed_lines = []
         with open(file, "r") as open_file:
             lines = open_file.readlines()
@@ -231,9 +241,12 @@ def parse_file(file):
             num_lines = len(lines)
             num_words = 0
             num_characters = 0
+            # Add each line to LIFO stack
             for line in lines:
                 reversed_lines.append(line)
+                # Add number of words that exist on the current line, ignoring new line character and empty strings
                 num_words += len([word for word in line.split(" ") if word != '' and word != '\n'])
+                # Add number of characters
                 num_characters += len(line)
 
             print("Total number of lines: " + str(num_lines))
@@ -241,32 +254,23 @@ def parse_file(file):
             print("Total number of characters: " + str(num_characters))
 
         with open("reversed_lines.txt", "w") as write_file:
+            # Write to new file while elements still exist on LIFO stack
             while reversed_lines:
                 write_file.write(reversed_lines.pop())
 
-    else:
+    except FileNotFoundError:
         print(file + " does not exist.")
+    except Exception as e:
+        print("Exception occured: " + e)
 
 print("\nProblem 4:")
 # Given Test Case
-# parse_file('sample.txt')
+parse_file('sample.txt')
 
-parse_file('test.txt')
 
 # My Test Cases
+parse_file('input1.txt')
 """
-CASE 1:
-INPUT:
-input.txt (Three new line characters)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-parse_file('input.txt')
-
 OUTPUT:
 Total number of lines: 3
 Total number of words: 0
@@ -279,27 +283,16 @@ reversed_lines.txt:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-CASE 2:
-INPUT:
-input.txt - does not exist
-
-parse_file('input.txt')
-
+"""
+parse_file('input2.txt')
+"""
 OUTPUT:
 input.txt does not exist
 
 reversed_lines.txt - does not exist (if it didn't exist previously)
-
-CASE 3:
-INPUT:
-input.txt: (empty file)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-parse_file('input.txt')
-
+"""
+parse_file('input3.txt')
+"""
 OUTPUT:
 Total number of lines: 0
 Total number of words: 0
@@ -308,19 +301,9 @@ Total number of characters: 0
 reversed_lines.txt: (empty file)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-CASE 4:
-INPUT:
-input.txt (Three lines of only whitespaces)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   Hello world!
-   Lots of whitespace.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-parse_file('input.txt')
-
+"""
+parse_file('input4.txt')
+"""
 OUTPUT:
 Total number of lines: 2
 Total number of words: 5
@@ -332,17 +315,9 @@ reversed_lines.txt:
    Hello world!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-CASE 5:
-INPUT:
-input.txt: (empty file)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This file only has one line.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-parse_file('input.txt')
-
+"""
+parse_file('input5.txt')
+"""
 OUTPUT:
 Total number of lines: 1
 Total number of words: 6
