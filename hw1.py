@@ -24,6 +24,8 @@ def isValid(string):
     if len(keys) > 2:
         return 'NO'
 
+    if(lengthFrequency[keys[0]] == 1 or lengthFrequency[keys[1]] == 1):
+        return 'YES'
     diff1 = abs(keys[0]-keys[1])*abs(lengthFrequency[keys[0]])
     diff2 = abs(keys[0]-keys[1])*abs(lengthFrequency[keys[1]])
 
